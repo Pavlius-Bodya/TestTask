@@ -1,88 +1,49 @@
 import React, { useEffect, useState } from 'react'
 
+import {hryvniaBuyCurrency,currencyBuyHryvnia,currencyBuyCurrency,cofCurrencyBuy,cofCurrencySale,handleInput,handleOutput,handleInputValue,handleOutputValue} from '../services/utilities/index'
+
 export const Converter = ({ data }) => {
-  const [firstInput,setFirstInput]=useState({input:'',select:'UAH'})
-  const [secondInput, setSecondInput] = useState({ input: '', select: 'USD' })
-  
+  const [input,setInput]=useState({input:'',select:'UAH'})
+  const [output, setOutput] = useState({ input: '', select: 'USD' })  
   const [selectValue,setSelectValue]=useState()
-  const [selectInput, setSelectInput] = useState()
-
-  const regEx = {
-    numeric: /^[0-9]*[.,]?[0-9]*$/,
-  };
+  const [inputValue, setInputValue] = useState()
   
-
-
-  const handleFirstInput = (number) => {
-    setFirstInput({ ...firstInput, input: number })
-    setSelectInput(number)
-  }
-  const handleSecondInput = (number) => {
-    setSecondInput({ ...secondInput, input: number })
-    setSelectInput(number)
-  }  
-  const handleFirstSelect = (value) => {
-    if (secondInput.select !== value) {      
-      setFirstInput(prev=>({ ...prev, select: value }))
-      setSelectValue(value)
-    }
-  }  
-  
-  const handleSecondSelect = (value) => {
-    if(firstInput.select!==value){
-      setSecondInput(prev => ({ ...prev, select: value }))
-      setSelectValue(value)
-    }
-  }
-
-  const cofCurrencyBuy=(input)=>data.filter(item => item.ccy === input.select)[0].buy
-  const cofCurrencySale = (input) => data.filter(item => item.ccy === input.select)[0].sale
-
-
   useEffect(() => {
     converterSelect(selectValue)
   }, [selectValue])
 
   useEffect(() => {
-    converterInput(selectInput)
-  }, [selectInput])
+    converterInput(inputValue)
+  }, [inputValue])
   
   const converterInput = (number) => {
     if (data) {
-      if (number === firstInput.input) {
-        if (firstInput.select === 'UAH') {
-          
-          setSecondInput({ ...secondInput, input: (number / cofCurrencySale(secondInput)).toFixed(2) })
-          
-        } else if (firstInput.select === 'USD' && secondInput.select === 'EUR' || firstInput.select === 'EUR' && secondInput.select === 'USD') {
-
-          setSecondInput({ ...secondInput, input: (number*cofCurrencySale(firstInput)/cofCurrencySale(secondInput)).toFixed(2) })
+      if (number === input.input) {
+        if (input.select === 'UAH') {
+          setOutput({ ...output, input: hryvniaBuyCurrency(number,cofCurrencySale,output,data) })
+        } else if (output.select ==='UAH') {
+          setOutput({ ...output, input: currencyBuyHryvnia(number,cofCurrencyBuy,input,data) })
         }
         else {
-
-          setSecondInput({ ...secondInput, input: (cofCurrencyBuy(firstInput) * number).toFixed(2) })
+          setOutput({ ...output, input: currencyBuyCurrency(number,cofCurrencySale,cofCurrencySale,input,output,data) })
         }  
       } else {
-        if (secondInput.select === 'UAH') {
-
-          setFirstInput({ ...firstInput, input: (number / cofCurrencyBuy(firstInput)).toFixed(2) })
-          
-        } else if (firstInput.select === 'USD' && secondInput.select === 'EUR' || firstInput.select === 'EUR' && secondInput.select === 'USD') {
-
-          setFirstInput({ ...firstInput, input: (number*cofCurrencyBuy(secondInput)/cofCurrencyBuy(firstInput)).toFixed(2) })
+        if (output.select === 'UAH') {
+          setInput({ ...input, input: hryvniaBuyCurrency(number, cofCurrencyBuy, input, data) })          
+        } else if (input.select === 'UAH') {
+          setInput({ ...input, input: currencyBuyHryvnia(number,cofCurrencySale,output,data) })
         }
         else {
-          setFirstInput({ ...firstInput, input: (cofCurrencySale(secondInput) * number).toFixed(2) })
+          setInput({ ...input, input: currencyBuyCurrency(number,cofCurrencyBuy,cofCurrencyBuy,output,input,data) })
         } 
       }
     }
   }
-
   const converterSelect = (value) => {
-    if (value === firstInput.select) {
-      converterInput(secondInput.input)
+    if (value === input.select) {
+      converterInput(output.input)
     } else {
-      converterInput(firstInput.input)
+      converterInput(input.input)
     }
   }
   
@@ -92,24 +53,24 @@ export const Converter = ({ data }) => {
     <div className='converter'>
       <div className='container'>
         <div className='converter-form'>
-          <select className='select' value={firstInput.select} onChange={(e)=>handleFirstSelect(e.target.value)}>
+          <select className='select' value={input.select} onChange={(e)=>handleInputValue(e.target.value,setOutput,setSelectValue,output)}>
             <option className='option'>UAH</option>
             {data && data.map((item,index) => 
               <option className='option' key={index}>{item.ccy}</option>
             )
           }
           </select>
-          <input className='input' pattern={ /^[0-9]*[.,]?[0-9]*$/} value={firstInput.input} placeholder='Enter the amount' onChange={(e)=>handleFirstInput(e.target.value) } />
+          <input className='input' type='number' value={input.input} placeholder='Enter the amount' onChange={(e)=>handleInput(e.target.value,setInput,setInputValue) } />
         </div>
         <div className='converter-form'>
-          <select className='select' value={secondInput.select} onChange={(e)=>handleSecondSelect(e.target.value)}>
+          <select className='select' value={output.select} onChange={(e)=>handleOutputValue(e.target.value,setInput,setSelectValue,input)}>
             <option className='option'>UAH</option>
             {data && data.map((item, index) => 
               <option className='option' key={index}>{item.ccy}</option>
             )
           }
           </select>
-          <input className='input' pattern='/^[0-9]*[.,]?[0-9]*$/' value={secondInput.input} placeholder='Enter the amount' onChange={(e)=>handleSecondInput(e.target.value) }/>
+          <input className='input' type='number' value={output.input} placeholder='Enter the amount' onChange={(e)=>handleOutput(e.target.value,setOutput,setInputValue) }/>
         </div>
       </div>
     </div>
