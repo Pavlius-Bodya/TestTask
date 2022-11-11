@@ -1,7 +1,7 @@
 import './App.css';
 import useGetCurrencyData from './hooks/useGetCurrencyData';
-import { Converter } from './Components/Converter';
-import { Header } from './Components/Header';
+import { Converter } from './components/Converter';
+import { Header } from './components/Header';
 
 function App() {
   const data = useGetCurrencyData("https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5");
