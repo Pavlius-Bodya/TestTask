@@ -4,14 +4,14 @@ const useGetCurrencyData = (url) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-     fetch(url)
+    fetch(url)
       .then((res) => res.json())
       .then((result) => {
-          setData(result.filter(item=>item.ccy!=='BTC'))
-      })
+        setData(result.filter(item => item.ccy !== 'BTC'))
+      });
   }, [url]);
 
-  return [data];
+  return data;
 };
 
 export default useGetCurrencyData;

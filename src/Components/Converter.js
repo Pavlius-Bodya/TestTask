@@ -1,49 +1,49 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 
-import {hryvniaBuyCurrency,currencyBuyHryvnia,currencyBuyCurrency,cofCurrencyBuy,cofCurrencySale,handleInput,handleOutput,handleInputValue,handleOutputValue} from '../services/utilities/index'
+import {hryvniaBuyCurrency,currencyBuyHryvnia,currencyBuyCurrency,cofCurrencyBuy,cofCurrencySale,handleInput,handleOutput,handleInputValue,handleOutputValue} from '../utilities/index'
 
 export const Converter = ({ data }) => {
-  const [input,setInput]=useState({input:'',select:'UAH'})
-  const [output, setOutput] = useState({ input: '', select: 'USD' })  
-  const [selectValue,setSelectValue]=useState()
-  const [inputValue, setInputValue] = useState()
+  const [input, setInput] = useState({ input: '', select: 'UAH' });
+  const [output, setOutput] = useState({ input: '', select: 'USD' });
+  const [selectValue, setSelectValue] = useState();
+  const [inputValue, setInputValue] = useState();
   
   useEffect(() => {
     converterSelect(selectValue)
-  }, [selectValue])
+  }, [selectValue]);
 
   useEffect(() => {
     converterInput(inputValue)
-  }, [inputValue])
+  }, [inputValue]);
   
   const converterInput = (number) => {
     if (data) {
       if (number === input.input) {
         if (input.select === 'UAH') {
-          setOutput({ ...output, input: hryvniaBuyCurrency(number,cofCurrencySale,output,data) })
+          setOutput({ ...output, input: hryvniaBuyCurrency(number, cofCurrencySale, output, data) });
         } else if (output.select ==='UAH') {
-          setOutput({ ...output, input: currencyBuyHryvnia(number,cofCurrencyBuy,input,data) })
+          setOutput({ ...output, input: currencyBuyHryvnia(number, cofCurrencyBuy, input, data) });
         }
         else {
-          setOutput({ ...output, input: currencyBuyCurrency(number,cofCurrencySale,cofCurrencySale,input,output,data) })
+          setOutput({ ...output, input: currencyBuyCurrency(number, cofCurrencySale, cofCurrencySale, input, output, data) });
         }  
       } else {
         if (output.select === 'UAH') {
-          setInput({ ...input, input: hryvniaBuyCurrency(number, cofCurrencyBuy, input, data) })          
+          setInput({ ...input, input: hryvniaBuyCurrency(number, cofCurrencyBuy, input, data) });        
         } else if (input.select === 'UAH') {
-          setInput({ ...input, input: currencyBuyHryvnia(number,cofCurrencySale,output,data) })
+          setInput({ ...input, input: currencyBuyHryvnia(number, cofCurrencySale, output, data) });
         }
         else {
-          setInput({ ...input, input: currencyBuyCurrency(number,cofCurrencyBuy,cofCurrencyBuy,output,input,data) })
+          setInput({ ...input, input: currencyBuyCurrency(number, cofCurrencyBuy, cofCurrencyBuy, output, input, data) });
         } 
       }
     }
   }
   const converterSelect = (value) => {
     if (value === input.select) {
-      converterInput(output.input)
+      converterInput(output.input);
     } else {
-      converterInput(input.input)
+      converterInput(input.input);
     }
   }
   
