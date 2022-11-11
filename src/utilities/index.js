@@ -10,21 +10,9 @@ export const handleInput = (number, setInput, setInputValue) => {
     setInputValue(number);
 };
 
-export const handleOutput = (number, setOutput, setInputValue) => {
-    setOutput(prev => ({ ...prev, input: number }));
-    setInputValue(number);
-};
-
 export const handleInputValue = (value, setInput, setSelectValue, output) => {
     if (output.select !== value) {
         setInput(prev => ({ ...prev, select: value }));
-        setSelectValue(value);
-    };
-};
-  
-export const handleOutputValue = (value, setOutput, setSelectValue, input) => {
-    if (input.select !== value) {
-        setOutput(prev => ({ ...prev, select: value }));
         setSelectValue(value);
     };
 };
