@@ -53,7 +53,7 @@ export const Converter = ({ data }) => {
     <div className='converter'>
       <div className='container'>
         <div className='converter-form'>
-          <select className='select' value={input.select} onChange={(e)=>handleInputValue(e.target.value,setOutput,setSelectValue,output)}>
+          <select className='select' value={input.select} onChange={(e)=>handleInputValue(e.target.value,setInput,setSelectValue,input)}>
             <option className='option'>UAH</option>
             {data && data.map((item,index) => 
               <option className='option' key={index}>{item.ccy}</option>
@@ -63,14 +63,14 @@ export const Converter = ({ data }) => {
           <input className='input' type='number' value={input.input} placeholder='Enter the amount' onChange={(e)=>handleInput(e.target.value,setInput,setInputValue) } />
         </div>
         <div className='converter-form'>
-          <select className='select' value={output.select} onChange={(e)=>handleInputValue(e.target.value,setInput,setSelectValue,input)}>
+          <select className='select' value={output.select} onChange={(e)=>handleInputValue(e.target.value,setOutput,setSelectValue,output)}>
             <option className='option'>UAH</option>
             {data && data.map((item, index) => 
               <option className='option' key={index}>{item.ccy}</option>
             )
           }
           </select>
-          <input className='input' type='number' value={output.input} placeholder='Enter the amount' onChange={(e)=>handleInput(e.target.value,setOutput,setInputValue) }/>
+          <input className='input' type='number' value={output.input} placeholder='Enter the amount' onChange={(e)=>handleInput(e.target.value,setOutput,setInputValue,input) }/>
         </div>
       </div>
     </div>
