@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
 
-import datareducers from './dataSlice'
+import exchangeReducers from './exchangeSlice'
+import inputReducers from './inputSlice'
 
 export const store= configureStore({
     reducer: {
-        data:datareducers
+        data:exchangeReducers,
+        input:inputReducers
     }
 })
 

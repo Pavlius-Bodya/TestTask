@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import { IData } from "../models";
+import { IExchange } from "../types";
 
 const useGetCurrencyData = (url:string) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<IExchange[]>();
 
   useEffect(() => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((result) => {
-        setData(result.filter((item:IData) => item.ccy !== 'BTC'))
-      });
+    const getResponse =async()=>{
+      const response = await fetch(url)
+      const result =await response.json()
+      setData(result.filter((item:IExchange) => item.ccy !== 'BTC'))
+    }
+    getResponse()
   }, [url]);
 
   return data;

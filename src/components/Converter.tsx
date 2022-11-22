@@ -1,7 +1,11 @@
-import  { useEffect, useState, FC } from 'react'
-import {IInput } from '../models';
-
-import { useAppSelector} from "../store/store"
+import  { useEffect, useState} from 'react'
+import { useAppDispatch, useAppSelector } from "../store/store"
+import {
+  setInput,
+  setSelectInput,
+  setOutput,
+  setSelectOutput
+} from '../store/inputSlice';
 
 import {
   hryvniaBuyCurrency,
@@ -9,56 +13,79 @@ import {
   currencyBuyCurrency,
   cofCurrencyBuy,
   cofCurrencySale,
-  handleInput,
-  handleInputValue
 } from '../utilities/index'
+import { Input } from './Input';
+import { Select } from './Select';
 
 
 
 export const Converter = () => {
-  const [input, setInput] = useState<IInput>({ input: '', select: 'UAH' });
-  const [output, setOutput] = useState<IInput>({ input: '', select: 'USD' });
-  const [selectValue, setSelectValue] = useState<string>();
-  const [inputValue, setInputValue] = useState<string>();
+  const dispatch = useAppDispatch();
 
-  const data = useAppSelector((state) => state.data.data)
+  const [selectValue, setSelectValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>('');
+
+  const { input } = useAppSelector((state) => state.input);
+  const { output } = useAppSelector((state) => state.input);
+  
+  const { exchange } = useAppSelector((state) => state.data);
+
+  const handleInput = (number: string) => {    
+    dispatch(setInput(number ));
+    setInputValue(number);
+  }
+  const handleOutput = (number: string) => {    
+    dispatch(setOutput(number ));
+    setInputValue(number);
+  }
+  const handleInputSelect = (value: string) => {   
+    if (output.select === value) return;
+    dispatch(setSelectInput(value ));
+    setSelectValue(value);
+  }
+  const handleOutputSelect = (value: string) => {   
+    if (input.select === value) return;
+    dispatch(setSelectOutput(value ));
+    setSelectValue(value);
+  }
   
   useEffect(() => {
-    converterSelect(selectValue!)
+    converterSelect(selectValue)
   }, [selectValue]);
 
   useEffect(() => {
-    converterInput(inputValue!)
+    converterInput(inputValue)
   }, [inputValue]);
   
   const converterInput = (number:string) => {
-    if (data) {
-      if (number === input.input) {
-        if (input.select === 'UAH') {
-          setOutput({ ...output, input: hryvniaBuyCurrency(number, cofCurrencySale, output, data) });
-        } else if (output.select ==='UAH') {
-          setOutput({ ...output, input: currencyBuyHryvnia(number, cofCurrencyBuy, input, data) });
-        }
-        else {
-          setOutput({ ...output, input: currencyBuyCurrency(number, cofCurrencySale, cofCurrencySale, input, output, data) });
-        }  
-      } else {
-        if (output.select === 'UAH') {
-          setInput({ ...input, input: hryvniaBuyCurrency(number, cofCurrencyBuy, input, data) });        
-        } else if (input.select === 'UAH') {
-          setInput({ ...input, input: currencyBuyHryvnia(number, cofCurrencySale, output, data) });
-        }
-        else {
-          setInput({ ...input, input: currencyBuyCurrency(number, cofCurrencyBuy, cofCurrencyBuy, output, input, data) });
-        } 
+    if (!exchange) return;
+    if (number === input.input){
+      if (input.select === 'UAH') {
+        dispatch(setOutput(hryvniaBuyCurrency(number, cofCurrencySale, output, exchange)));
+        
+      } else if (output.select ==='UAH') {
+        dispatch(setOutput(currencyBuyHryvnia(number, cofCurrencyBuy, input, exchange)));
       }
+      else {
+        dispatch(setOutput(currencyBuyCurrency(number, cofCurrencySale, cofCurrencySale, input, output, exchange)) );
+      }  
+    } else {
+      if (output.select === 'UAH') {
+        dispatch(setInput(hryvniaBuyCurrency(number, cofCurrencyBuy, input, exchange) ));        
+      } else if (input.select === 'UAH') {
+        dispatch(setInput(currencyBuyHryvnia(number, cofCurrencySale, output, exchange) ));
+      }
+      else {
+        dispatch(setInput(currencyBuyCurrency(number, cofCurrencyBuy, cofCurrencyBuy, output, input, exchange) ));
+      } 
     }
+    
   }
   const converterSelect = (value:string) => {
     if (value === input.select) {
-      converterInput(output.input);
-    } else {
       converterInput(input.input);
+    } else {
+      converterInput(output.input);
     }
   }
   
@@ -68,24 +95,12 @@ export const Converter = () => {
     <div className='converter'>
       <div className='container'>
         <div className='converter-form'>
-          <select className='select' value={input.select} onChange={(event:React.ChangeEvent<HTMLSelectElement>)=>handleInputValue(event.target.value,setInput,setSelectValue,input)}>
-            <option className='option'>UAH</option>
-            {data && data.map((item,index) => 
-              <option className='option' key={index}>{item.ccy}</option>
-            )
-          }
-          </select>
-          <input className='input' type='number' value={input.input} placeholder='Enter the amount' onChange={(event:React.ChangeEvent<HTMLInputElement>)=>handleInput(event.target.value,setInput,setInputValue) } />
+          <Select input={input} exchange={exchange} handleSelect={handleInputSelect} />
+          <Input input={input} handleInput={handleInput} />
         </div>
         <div className='converter-form'>
-          <select className='select' value={output.select} onChange={(event:React.ChangeEvent<HTMLSelectElement>)=>handleInputValue(event.target.value,setOutput,setSelectValue,output)}>
-            <option className='option'>UAH</option>
-            {data && data.map((item, index) => 
-              <option className='option' key={index}>{item.ccy}</option>
-            )
-          }
-          </select>
-          <input className='input' type='number' value={output.input} placeholder='Enter the amount' onChange={(event:React.ChangeEvent<HTMLInputElement>)=>handleInput(event.target.value,setOutput,setInputValue) }/>
+          <Select input={output} exchange={exchange} handleSelect={handleOutputSelect} />
+          <Input input={output} handleInput={handleOutput} />
         </div>
       </div>
     </div>
