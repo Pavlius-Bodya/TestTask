@@ -8,6 +8,6 @@ interface InputProps {
 
 export const Input = ({input,handleInput}:InputProps) => {
   return (
-    <input className='input' type='number' value={input.input} placeholder='Enter the amount' onChange={(event:React.ChangeEvent<HTMLInputElement>)=>handleInput(event.target.value) } />
+    <input className='input' type='number' value={input.amount} placeholder='Enter the amount' onChange={(event:React.ChangeEvent<HTMLInputElement>)=>handleInput(event.target.value) } />
   )
 }

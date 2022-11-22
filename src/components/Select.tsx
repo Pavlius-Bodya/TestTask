@@ -9,7 +9,7 @@ interface SelectProps {
 
 export const Select = ({input,exchange,handleSelect}:SelectProps) => {
   return (
-    <select className='select' value={input.select} onChange={(event:React.ChangeEvent<HTMLSelectElement>)=>handleSelect(event.target.value)}>
+    <select className='select' value={input.currency} onChange={(event:React.ChangeEvent<HTMLSelectElement>)=>handleSelect(event.target.value)}>
         <option className='option'>UAH</option>
         {exchange && exchange.map((item,index) => 
             <option className='option' key={index}>{item.ccy}</option>

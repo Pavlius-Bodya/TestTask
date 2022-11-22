@@ -10,13 +10,12 @@ type InputState = {
 
 const initialState: InputState = {
     input: {
-        input: '',
-        select:'UAH'
+        amount: '',
+        currency:'UAH'
     },
-    // поміняти інпут на амаунт а селект на каренсі
     output: {
-        input:'',
-        select:'USD'
+        amount:'',
+        currency:'USD'
     },
     
 }
@@ -26,22 +25,22 @@ export const inputSlice = createSlice({
     name: 'input',
     initialState,
     reducers: {
-        setInput:(state: InputState, action:PayloadAction<string>)=> {
-            state.input={...state.input,input:action.payload}
+        setInputAmount:(state: InputState, action:PayloadAction<string>)=> {
+            state.input={...state.input,amount:action.payload}
         },
-        setSelectInput:(state: InputState, action:PayloadAction<string>)=> {
-            state.input={...state.input,select:action.payload}
+        setInputCurrency:(state: InputState, action:PayloadAction<string>)=> {
+            state.input={...state.input,currency:action.payload}
         },
-        setOutput:(state: InputState, action:PayloadAction<string>)=> {
-            state.output={...state.output,input:action.payload}
+        setOutputAmount:(state: InputState, action:PayloadAction<string>)=> {
+            state.output={...state.output,amount:action.payload}
         },
-        setSelectOutput:(state: InputState, action:PayloadAction<string>)=> {
-            state.output={...state.output,select:action.payload}
+        setOutputCurrency:(state: InputState, action:PayloadAction<string>)=> {
+            state.output={...state.output,currency:action.payload}
         }
 
     },
 })
 
-export const { setInput,setSelectInput,setOutput,setSelectOutput } = inputSlice.actions
+export const { setInputAmount,setInputCurrency,setOutputAmount,setOutputCurrency } = inputSlice.actions
 
 export default inputSlice.reducer;

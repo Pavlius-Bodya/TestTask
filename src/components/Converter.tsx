@@ -1,10 +1,10 @@
 import  { useEffect, useState} from 'react'
 import { useAppDispatch, useAppSelector } from "../store/store"
 import {
-  setInput,
-  setSelectInput,
-  setOutput,
-  setSelectOutput
+  setInputAmount,
+  setInputCurrency,
+  setOutputAmount,
+  setOutputCurrency
 } from '../store/inputSlice';
 
 import {
@@ -31,21 +31,21 @@ export const Converter = () => {
   const { exchange } = useAppSelector((state) => state.data);
 
   const handleInput = (number: string) => {    
-    dispatch(setInput(number ));
+    dispatch(setInputAmount(number ));
     setInputValue(number);
   }
   const handleOutput = (number: string) => {    
-    dispatch(setOutput(number ));
+    dispatch(setOutputAmount(number ));
     setInputValue(number);
   }
   const handleInputSelect = (value: string) => {   
-    if (output.select === value) return;
-    dispatch(setSelectInput(value ));
+    if (output.currency === value) return;
+    dispatch(setInputCurrency(value ));
     setSelectValue(value);
   }
   const handleOutputSelect = (value: string) => {   
-    if (input.select === value) return;
-    dispatch(setSelectOutput(value ));
+    if (input.currency === value) return;
+    dispatch(setOutputCurrency(value ));
     setSelectValue(value);
   }
   
@@ -59,33 +59,33 @@ export const Converter = () => {
   
   const converterInput = (number:string) => {
     if (!exchange) return;
-    if (number === input.input){
-      if (input.select === 'UAH') {
-        dispatch(setOutput(hryvniaBuyCurrency(number, cofCurrencySale, output, exchange)));
+    if (number === input.amount){
+      if (input.currency === 'UAH') {
+        dispatch(setOutputAmount(hryvniaBuyCurrency(number, cofCurrencySale, output, exchange)));
         
-      } else if (output.select ==='UAH') {
-        dispatch(setOutput(currencyBuyHryvnia(number, cofCurrencyBuy, input, exchange)));
+      } else if (output.currency ==='UAH') {
+        dispatch(setOutputAmount(currencyBuyHryvnia(number, cofCurrencyBuy, input, exchange)));
       }
       else {
-        dispatch(setOutput(currencyBuyCurrency(number, cofCurrencySale, cofCurrencySale, input, output, exchange)) );
+        dispatch(setOutputAmount(currencyBuyCurrency(number, cofCurrencySale, cofCurrencySale, input, output, exchange)) );
       }  
     } else {
-      if (output.select === 'UAH') {
-        dispatch(setInput(hryvniaBuyCurrency(number, cofCurrencyBuy, input, exchange) ));        
-      } else if (input.select === 'UAH') {
-        dispatch(setInput(currencyBuyHryvnia(number, cofCurrencySale, output, exchange) ));
+      if (output.currency === 'UAH') {
+        dispatch(setInputAmount(hryvniaBuyCurrency(number, cofCurrencyBuy, input, exchange) ));        
+      } else if (input.currency === 'UAH') {
+        dispatch(setInputAmount(currencyBuyHryvnia(number, cofCurrencySale, output, exchange) ));
       }
       else {
-        dispatch(setInput(currencyBuyCurrency(number, cofCurrencyBuy, cofCurrencyBuy, output, input, exchange) ));
+        dispatch(setInputAmount(currencyBuyCurrency(number, cofCurrencyBuy, cofCurrencyBuy, output, input, exchange) ));
       } 
     }
     
   }
   const converterSelect = (value:string) => {
-    if (value === input.select) {
-      converterInput(input.input);
+    if (value === input.currency) {
+      converterInput(input.amount);
     } else {
-      converterInput(output.input);
+      converterInput(output.amount);
     }
   }
   

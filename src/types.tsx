@@ -5,6 +5,6 @@ export interface IExchange {
    sale:string 
 }
 export interface IInput{
-  input: string,
-  select:string,
+  amount: string,
+  currency:string,
 }
